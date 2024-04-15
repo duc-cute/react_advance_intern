@@ -15,12 +15,27 @@ import ConstantList from "./app/appConfig";
 import HttpService from "app/services/HttpService";
 import { store, StoreContext } from "./app/stores";
 import "./i18n";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 //import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const renderApp = () =>
   ReactDOM.render(
     <StoreContext.Provider value={store}>
       <App />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </StoreContext.Provider>,
     document.getElementById("root")
   );
