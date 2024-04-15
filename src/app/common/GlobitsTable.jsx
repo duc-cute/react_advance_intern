@@ -1,8 +1,9 @@
 import React from "react";
-import MaterialTable from "material-table";
+import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles } from "@material-ui/core";
 import GlobitsPagination from "./GlobitsPagination";
 import { useTranslation } from "react-i18next";
+import Chip from "@material-ui/core/Chip";
 
 const useStyles = makeStyles((theme) => ({
   globitsTableWraper: {
@@ -11,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function GlobitsTable(props) {
+export default function GlobitsTable({ props }) {
   const classes = useStyles();
   const { t } = useTranslation();
   const {
@@ -26,7 +27,11 @@ export default function GlobitsTable(props) {
     page,
     selection,
     handleSelectList,
+    editable,
+    defaultValueRowsPerPage,
   } = props;
+  console.log("data", data);
+  console.log("props", props);
 
   return (
     <div className={classes.globitsTableWraper}>
@@ -37,6 +42,8 @@ export default function GlobitsTable(props) {
           var list = rows.find((a) => a.id === row.parentId);
           return list;
         }}
+        editable={{ ...editable }}
+        // actions={actions}
         options={{
           selection: selection ? true : false,
           actionsColumnIndex: -1,
@@ -44,6 +51,8 @@ export default function GlobitsTable(props) {
           search: false,
           toolbar: false,
           maxBodyHeight: "300px",
+          addRowPosition: true,
+
           headerStyle: {
             backgroundColor: "#e3f2fd",
             // color: "#fff",
@@ -70,6 +79,7 @@ export default function GlobitsTable(props) {
         pageSizeOption={pageSizeOption}
         totalElements={totalElements}
         page={page}
+        defaultValueRowsPerPage={defaultValueRowsPerPage}
       />
     </div>
   );

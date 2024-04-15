@@ -18,8 +18,24 @@ export const navigations = [
         icon: "remove",
         isVisible: true,
       },
-      
+      {
+        name: "Dân tộc",
+        path: ConstantList.ROOT_PATH + "category/ethnics",
+        icon: "remove",
+        isVisible: true,
+      },
+      {
+        name: "Tôn giáo",
+        path: ConstantList.ROOT_PATH + "category/religion",
+        icon: "remove",
+        isVisible: true,
+      },
+      {
+        name: "Người Thân",
+        path: ConstantList.ROOT_PATH + "category/familyrelationship",
+        icon: "remove",
+        isVisible: true,
+      },
     ],
   },
-  
 ];

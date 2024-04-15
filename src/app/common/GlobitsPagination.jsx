@@ -65,8 +65,10 @@ export default function GlobitsPagination(props) {
     pageSizeOption,
     totalElements,
     page,
+    defaultValueRowsPerPage,
   } = props;
   const [pageSize, setPageSize] = React.useState(props.pageSize);
+  console.log("pagesize", page);
   const handleChange = (event) => {
     setRowsPerPage(event);
     setPageSize(event.target.value);
@@ -94,9 +96,12 @@ export default function GlobitsPagination(props) {
             value={pageSize}
             className={classes.rowOptions}
             onChange={handleChange}
+            defaultValue={defaultValueRowsPerPage}
           >
             {pageSizeOption.map((option, index) => (
-              <MenuItem value={option}>{option}</MenuItem>
+              <MenuItem key={index} value={option}>
+                {option}
+              </MenuItem>
             ))}
           </TextField>
         </Grid>
