@@ -3,7 +3,7 @@ import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles } from "@material-ui/core";
 import GlobitsPagination from "./GlobitsPagination";
 import { useTranslation } from "react-i18next";
-import Chip from "@material-ui/core/Chip";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
   globitsTableWraper: {
@@ -28,10 +28,10 @@ export default function GlobitsTable({ props }) {
     selection,
     handleSelectList,
     editable,
+    components,
+    actions,
     defaultValueRowsPerPage,
   } = props;
-  console.log("data", data);
-  console.log("props", props);
 
   return (
     <div className={classes.globitsTableWraper}>
@@ -39,11 +39,12 @@ export default function GlobitsTable({ props }) {
         data={data}
         columns={columns}
         parentChildData={(row, rows) => {
-          var list = rows.find((a) => a.id === row.parentId);
+          var list = rows.find((a) => a.id === row?.parentId);
+          console.log("list", list);
           return list;
         }}
         editable={{ ...editable }}
-        // actions={actions}
+        actions={actions}
         options={{
           selection: selection ? true : false,
           actionsColumnIndex: -1,
@@ -69,6 +70,9 @@ export default function GlobitsTable({ props }) {
           body: {
             emptyDataSourceMessage: `${t("general.emptyDataMessageTable")}`,
           },
+        }}
+        components={{
+          ...components,
         }}
       />
       <GlobitsPagination

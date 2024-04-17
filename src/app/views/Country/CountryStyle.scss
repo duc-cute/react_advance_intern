@@ -17,6 +17,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
 
   .group-field {
     display: flex;
@@ -26,6 +27,7 @@
 }
 .MuiDialog-paperWidthSm {
   min-width: 500px;
+  max-width: inherit !important;
 }
 
 .form-custom {

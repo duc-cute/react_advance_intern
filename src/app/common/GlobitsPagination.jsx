@@ -68,7 +68,6 @@ export default function GlobitsPagination(props) {
     defaultValueRowsPerPage,
   } = props;
   const [pageSize, setPageSize] = React.useState(props.pageSize);
-  console.log("pagesize", page);
   const handleChange = (event) => {
     setRowsPerPage(event);
     setPageSize(event.target.value);

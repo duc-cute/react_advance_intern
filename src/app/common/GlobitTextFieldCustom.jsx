@@ -8,21 +8,23 @@ export default function GlobitTextFieldCustom({
   label,
   name,
   type,
+  variant = "outlined",
+  placeholder,
+  disabled,
   ...props
 }) {
   const { errors, touched, handleBlur, handleChange } = formik;
 
   return (
     <div style={{ width: "100%" }}>
-      {/* {label && (
-        <label htmlFor={props.id || name} style={{ marginBottom: "6px" }}>
-          {label}
-        </label>
-      )} */}
       <TextField
         fullWidth
         name={name}
-        label={name}
+        // label={name}
+        size="small"
+        disabled={disabled}
+        placeholder={placeholder}
+        variant={variant}
         type={type}
         onBlur={handleBlur}
         onChange={handleChange}

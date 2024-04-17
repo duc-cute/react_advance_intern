@@ -5,13 +5,13 @@ import InputBase from "@material-ui/core/InputBase";
 import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import "../views/Country/CountryStyle.scss";
+import "../../styles/custom.scss";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "2px 4px",
     display: "flex",
     alignItems: "center",
-    width: 500,
   },
   input: {
     marginLeft: theme.spacing(1),
@@ -28,23 +28,20 @@ const useStyles = makeStyles((theme) => ({
 
 const GlobitsSearchInputCustom = (props) => {
   const classes = useStyles();
-  const { formik, name, id } = props;
+  const { formik, name, id, placeholder } = props;
   const { handleChange } = formik;
 
   return (
-    <Paper
-      component="form"
-      className={classes.root}
-      style={{ minWidth: "500px" }}
-    >
+    <Paper component="form" className={classes.root}>
       <InputBase
         className={classes.input}
-        placeholder="Search Google Maps"
+        placeholder={placeholder}
         inputProps={{ "aria-label": "search google maps" }}
         id={id}
         name={name}
         value={formik.values[name]}
         onChange={handleChange}
+        style={{ minWidth: "320px" }}
       />
       <IconButton
         type="submit"
