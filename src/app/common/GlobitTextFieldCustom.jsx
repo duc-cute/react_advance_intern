@@ -11,10 +11,10 @@ export default function GlobitTextFieldCustom({
   variant = "outlined",
   placeholder,
   disabled,
+  onChange,
+  onBlur,
   ...props
 }) {
-  const { errors, touched, handleBlur, handleChange } = formik;
-
   return (
     <div style={{ width: "100%" }}>
       <TextField
@@ -26,11 +26,11 @@ export default function GlobitTextFieldCustom({
         placeholder={placeholder}
         variant={variant}
         type={type}
-        onBlur={handleBlur}
-        onChange={handleChange}
-        value={formik.values[name]}
-        error={touched[name] && Boolean(errors[name])}
-        helperText={touched[name] && errors[name]}
+        onBlur={onBlur || formik?.handleBlur}
+        onChange={onChange || formik?.handleChange}
+        value={value || formik?.values[name]}
+        error={formik?.touched[name] && Boolean(formik?.errors[name])}
+        helperText={formik?.touched[name] && formik?.errors[name]}
         // className="form-custom"
       />
     </div>

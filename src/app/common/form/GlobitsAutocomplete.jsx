@@ -17,12 +17,11 @@ const GlobitsAutocomplete = ({
   const [field, meta] = useField(name);
 
   const handleChange = (_, value) => {
-    if(isObject != null && !isObject){
+    if (isObject != null && !isObject) {
       setFieldValue(name, value.value ? value.value : null);
-    }else{
+    } else {
       setFieldValue(name, value ? value : null);
     }
-    
   };
 
   const configAutocomplete = {

@@ -275,15 +275,12 @@ export default observer(function FamilyRelationshipIndex() {
 
   const contentDialogDepartments = (
     <div
-      className="department-content"
+      className="dialog-content"
       style={{ width: "100%", position: "relative" }}
     >
-      <div className="department-action">
-        <div className="department-form">
-          <form
-            onSubmit={formikSearch.handleSubmit}
-            className="form-dialog-department"
-          >
+      <div className="dialog-action">
+        <div className="dialog-form">
+          <form onSubmit={formikSearch.handleSubmit} className="form-dialog">
             <GlobitsSearchInputCustom
               name={"keyword"}
               id={"keyword"}

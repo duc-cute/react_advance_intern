@@ -1,15 +1,20 @@
-.department-content {
+.dilog-content {
   padding-bottom: 60px;
-  .form-dialog-department {
+  .form-dialog {
     display: flex;
     justify-content: end;
     margin-bottom: 24px;
   }
 
-  .department-table {
+  .dilog-table {
     margin-bottom: 24px;
   }
 }
 .makeStyles-root-384 {
   width: inherit !important;
+}
+.grid-staffFamily {
+  .MuiOutlinedInput-root {
+    border-radius: 0 !important;
+  }
 }

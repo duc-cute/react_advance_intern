@@ -16,6 +16,7 @@ export default function GlobitsDialogCustom({
     root: {
       display: "flex",
       width: `${width}px!important`,
+      padding: "16px 24px",
     },
     title: {
       color: "#fff !important",
