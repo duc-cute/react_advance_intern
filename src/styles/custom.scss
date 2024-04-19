@@ -18,3 +18,25 @@
     border-radius: 0 !important;
   }
 }
+
+.staff-wrapper {
+  margin: 32px 24px;
+  .MuiIconButton-colorInherit:first-child {
+    color: #01c0c8;
+  }
+  .MuiIconButton-colorInherit:last-child {
+    color: #fb9678;
+  }
+  .staff-content {
+    .staff-action {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      .staff-form {
+        display: flex;
+        gap: 24px;
+      }
+    }
+  }
+}

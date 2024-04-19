@@ -8,12 +8,10 @@ import { Field, FieldArray, Formik, useFormik } from "formik";
 import GlobitsDialogCustom from "app/common/form/GlobitsDialogCustom";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {
-  StaffSchema,
   columnStaff,
   columnStaffFamilyRelShip,
-  gender,
+  genderConstant,
   pageSizeOption,
-  typeDepartment,
   typeStaff,
   typeStaffFamilyRel,
 } from "../constant";
@@ -24,12 +22,15 @@ import GlobitTextFieldCustom from "app/common/GlobitTextFieldCustom";
 import GlobitsTableCustom from "app/common/GlobitsTableCustom";
 import GlobitsAutocomplete from "app/common/form/GlobitsAutocomplete";
 import GlobitsDateTimePicker from "app/common/form/GlobitsDateTimePicker";
+import { getStaff } from "./StaffService";
 
 export default observer(function FamilyRelationshipIndex() {
   const [openModal, setOpenModal] = useState(false);
-  const [openModalStaff, setOpenModalStaff] = useState(false);
-  const [departmentSelect, setDepartmentSelect] = useState({});
-  const [dataSelect, setDataSelect] = useState({});
+  const [openModalUpdate, setOpenModalUpdate] = useState(false);
+  const [dataInital, setDataInital] = useState({
+    ...typeStaff,
+    familyRelationships: [{ ...typeStaffFamilyRel }],
+  });
   const {
     staffStore,
     ethnicsStore,
@@ -87,46 +88,110 @@ export default observer(function FamilyRelationshipIndex() {
     loadReligions(queriesInfo);
   }, []);
 
-  const editable = {
-    onRowUpdate: async (newData) => handleUpdate(newData, setQueries),
-    onRowDelete: async (oldData) => handleDelete(oldData, setQueries, queries),
-  };
-
   const handleSearch = (value) => {
     setQueries((prev) => ({ ...prev, pageIndex: 1, keyword: value.keyword }));
   };
 
+  const actionsTableStaff = [
+    {
+      icon: "edit",
+      tooltip: "Update User",
+      onClick: async (event, rowData) => {
+        const dataUser = await getStaff(rowData?.id);
+        const {
+          id,
+          firstName,
+          lastName,
+          displayName,
+          birthDate,
+          gender,
+          department,
+          email,
+          permanentResidence,
+          currentResidence,
+          phoneNumber,
+          idNumber,
+          nationality,
+          ethnics,
+          religion,
+          familyRelationships,
+          birthPlace,
+        } = dataUser.data;
+        let genderFormat = genderConstant.find((el) => el.value === gender);
+
+        setDataInital({
+          id,
+          firstName,
+          birthDate,
+          birthPlace,
+          gender: genderFormat,
+          department,
+          email,
+          permanentResidence,
+          currentResidence,
+          phoneNumber,
+          idNumber,
+          nationality,
+          ethnics,
+          religion,
+          familyRelationships,
+          lastName,
+          displayName,
+        });
+        setOpenModalUpdate(true);
+      },
+    },
+    {
+      icon: "delete",
+      tooltip: "Delete User",
+      onClick: async (event, rowData) => {
+        await handleDelete(rowData.id, setQueries, queries);
+      },
+    },
+  ];
+
   const propsTableStaff = {
-    data: staffList,
+    data: staffListFormat,
     columns: columnStaff,
     totalElements: count,
     totalPages: totalPages,
     setRowsPerPage: setRowsPerPage,
-    editable: editable,
     title: "Department  Table",
     pageSizeOption: pageSizeOption,
     page: queries.pageIndex,
+    actions: actionsTableStaff,
+
     handleChangePage: handleChangePage,
     defaultValueRowsPerPage: queries.pageSize,
   };
 
-  const contentDialogAdd = (
+  const contentDialog = (
     <>
       <Formik
-        initialValues={{
-          ...typeStaff,
-          familyRelationships: [{ ...typeStaffFamilyRel }],
-        }}
+        initialValues={dataInital}
         onSubmit={async (values, actions) => {
           let { displayName, gender } = values;
           displayName = `${values.firstName} ${values.lastName}`;
-          const res = await handleAdd({
-            ...values,
-            displayName,
-            gender: gender?.value,
-          });
-          console.log("res", res);
-          console.log("va", values);
+          if (openModal) {
+            await handleAdd({
+              ...values,
+              displayName,
+              gender: gender?.value,
+            });
+            setOpenModal(false);
+          }
+          if (openModalUpdate) {
+            console.log("update");
+            await handleUpdate(
+              {
+                ...values,
+                displayName,
+                gender: gender?.value,
+              },
+              setQueries
+            );
+            setOpenModalUpdate(false);
+          }
         }}
       >
         {(props) => (
@@ -152,6 +217,7 @@ export default observer(function FamilyRelationshipIndex() {
                   onBlur={props.handleBlur}
                   name="firstName"
                   placeholder="Enter firstName"
+                  value={props.values["firstName"]}
                 />
               </div>
               <div className="group-field">
@@ -161,6 +227,7 @@ export default observer(function FamilyRelationshipIndex() {
                   onBlur={props.handleBlur}
                   name="lastName"
                   placeholder="Enter lastName"
+                  value={props.values["lastName"]}
                 />
               </div>
               <div className="group-field">
@@ -177,10 +244,9 @@ export default observer(function FamilyRelationshipIndex() {
 
               <div className="group-field">
                 <label>Giới tính</label>
-
                 <GlobitsAutocomplete
                   name="gender"
-                  options={gender}
+                  options={genderConstant}
                   displayData={"name"}
                   field="gender"
                 />
@@ -192,6 +258,9 @@ export default observer(function FamilyRelationshipIndex() {
                   onBlur={props.handleBlur}
                   name="birthDate"
                   placeholder="Enter birthDate"
+                  value={new Date(props.values["birthDate"])
+                    .toISOString()
+                    .substr(0, 10)}
                 />
               </div>
               <div className="group-field">
@@ -205,7 +274,6 @@ export default observer(function FamilyRelationshipIndex() {
               </div>
               <div className="group-field">
                 <label>Dân tộc</label>
-
                 <GlobitsAutocomplete
                   name="ethnics"
                   options={ethnicsList}
@@ -215,7 +283,6 @@ export default observer(function FamilyRelationshipIndex() {
               </div>
               <div className="group-field">
                 <label>Tôn giáo</label>
-
                 <GlobitsAutocomplete
                   name="religion"
                   options={religionList}
@@ -240,6 +307,7 @@ export default observer(function FamilyRelationshipIndex() {
                   onBlur={props.handleBlur}
                   name="birthPlace"
                   placeholder="Enter birth place"
+                  value={props.values["birthPlace"]}
                 />
               </div>
               <div className="group-field">
@@ -249,6 +317,7 @@ export default observer(function FamilyRelationshipIndex() {
                   onBlur={props.handleBlur}
                   name="permanentResidence"
                   placeholder="Enter permanent residence"
+                  value={props.values["permanentResidence"]}
                 />
               </div>
               <div className="group-field">
@@ -258,6 +327,7 @@ export default observer(function FamilyRelationshipIndex() {
                   onBlur={props.handleBlur}
                   name="currentResidence"
                   placeholder="Enter current residence"
+                  value={props.values["currentResidence"]}
                 />
               </div>
               <div className="group-field">
@@ -267,6 +337,7 @@ export default observer(function FamilyRelationshipIndex() {
                   onBlur={props.handleBlur}
                   name="email"
                   placeholder="Enter email"
+                  value={props.values["email"]}
                 />
               </div>
               <div className="group-field">
@@ -276,6 +347,7 @@ export default observer(function FamilyRelationshipIndex() {
                   onBlur={props.handleBlur}
                   name="phoneNumber"
                   placeholder="Enter phone number"
+                  value={props.values["phoneNumber"]}
                 />
               </div>
               <div className="group-field">
@@ -285,6 +357,7 @@ export default observer(function FamilyRelationshipIndex() {
                   onBlur={props.handleBlur}
                   name="idNumber"
                   placeholder="Enter id number"
+                  value={props.values["idNumber"]}
                 />
               </div>
               <div className="group-field" style={{ gridColumn: "span 3" }}>
@@ -325,15 +398,20 @@ export default observer(function FamilyRelationshipIndex() {
                                     <GlobitTextFieldCustom
                                       onChange={props.handleChange}
                                       name={`familyRelationships[${index}].fullName`}
+                                      value={staffFamily.fullName}
                                     />
                                     <GlobitTextFieldCustom
                                       onChange={props.handleChange}
                                       name={`familyRelationships[${index}].profession`}
+                                      value={staffFamily.profession}
                                     />
 
                                     <GlobitsDateTimePicker
                                       onChange={props.handleChange}
                                       name={`familyRelationships[${index}].birthDate`}
+                                      value={new Date(staffFamily.birthDate)
+                                        .toISOString()
+                                        .substr(0, 10)}
                                     />
 
                                     <GlobitsAutocomplete
@@ -345,10 +423,12 @@ export default observer(function FamilyRelationshipIndex() {
                                     <GlobitTextFieldCustom
                                       onChange={props.handleChange}
                                       name={`familyRelationships[${index}].address`}
+                                      value={staffFamily.address}
                                     />
                                     <GlobitTextFieldCustom
                                       onChange={props.handleChange}
                                       name={`familyRelationships[${index}].description`}
+                                      value={staffFamily.description}
                                     />
 
                                     <div
@@ -386,12 +466,7 @@ export default observer(function FamilyRelationshipIndex() {
               >
                 Hủy
               </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                onClick={() => setOpenModal(false)}
-              >
+              <Button type="submit" variant="contained" color="primary">
                 Thêm
               </Button>
             </DialogActions>
@@ -402,11 +477,11 @@ export default observer(function FamilyRelationshipIndex() {
   );
 
   return (
-    <div className="country-wrapper">
-      <div className="country-content">
-        <div className="country-action">
+    <div className="staff-wrapper">
+      <div className="staff-content">
+        <div className="staff-action">
           <h2>Staff Table</h2>
-          <div className="country-form">
+          <div className="staff-form">
             <form onSubmit={formikSearch.handleSubmit}>
               <GlobitsSearchInputCustom
                 name={"keyword"}
@@ -434,8 +509,15 @@ export default observer(function FamilyRelationshipIndex() {
       <GlobitsDialogCustom
         open={openModal}
         setOpen={setOpenModal}
-        content={contentDialogAdd}
+        content={contentDialog}
         title="Thêm Nhân Viên"
+        width={1000}
+      />
+      <GlobitsDialogCustom
+        open={openModalUpdate}
+        setOpen={setOpenModalUpdate}
+        content={contentDialog}
+        title="Cập nhật Nhân Viên"
         width={1000}
       />
     </div>

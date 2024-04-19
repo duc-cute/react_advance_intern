@@ -179,7 +179,7 @@ export const actionsTableDepart = [
   },
 ];
 
-export const gender = [
+export const genderConstant = [
   {
     value: "F",
     name: "Nữ",

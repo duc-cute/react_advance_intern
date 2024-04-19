@@ -32,7 +32,9 @@ export default function GlobitsTableCustom({ content, columns }) {
             {columns &&
               columns?.length > 0 &&
               columns.map((col, index) => (
-                <TableCell className={classes.ceil}>{col?.title}</TableCell>
+                <TableCell key={index} className={classes.ceil}>
+                  {col?.title}
+                </TableCell>
               ))}
           </TableRow>
         </TableHead>
