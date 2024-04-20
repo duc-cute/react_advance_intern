@@ -48,6 +48,12 @@ export const navigations = [
         icon: "remove",
         isVisible: true,
       },
+      {
+        name: "Dự Án",
+        path: ConstantList.ROOT_PATH + "category/project",
+        icon: "remove",
+        isVisible: true,
+      },
     ],
   },
 ];

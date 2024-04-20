@@ -91,6 +91,13 @@ export const typeStaff = {
   department: "",
 };
 
+export const typeProject = {
+  name: "",
+  code: "",
+  description: "",
+  projectStaff: [],
+};
+
 export const typeStaffFamilyRel = {
   fullName: "",
   profession: "",
@@ -101,6 +108,15 @@ export const typeStaffFamilyRel = {
 };
 
 export const columnsDepart = [
+  { field: "code", title: "Mã" },
+  {
+    field: "name",
+    title: "Tên phòng ban",
+  },
+
+  { field: "description", title: "Description", width: 50 },
+];
+export const columnsProject = [
   { field: "code", title: "Mã" },
   {
     field: "name",

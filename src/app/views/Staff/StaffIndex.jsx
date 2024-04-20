@@ -4,7 +4,7 @@ import GlobitsTable from "app/common/GlobitsTable";
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
 import GlobitsSearchInputCustom from "app/common/GlobitsSearchInputCustom";
-import { Field, FieldArray, Formik, useFormik } from "formik";
+import { FieldArray, Formik, useFormik } from "formik";
 import GlobitsDialogCustom from "app/common/form/GlobitsDialogCustom";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {
@@ -23,6 +23,7 @@ import GlobitsTableCustom from "app/common/GlobitsTableCustom";
 import GlobitsAutocomplete from "app/common/form/GlobitsAutocomplete";
 import GlobitsDateTimePicker from "app/common/form/GlobitsDateTimePicker";
 import { getStaff } from "./StaffService";
+import moment from "moment";
 
 export default observer(function FamilyRelationshipIndex() {
   const [openModal, setOpenModal] = useState(false);
@@ -40,7 +41,6 @@ export default observer(function FamilyRelationshipIndex() {
     religionStore,
   } = useStore();
   const {
-    staffList,
     staffListFormat,
     loadStaff,
     totalPages,
@@ -118,11 +118,15 @@ export default observer(function FamilyRelationshipIndex() {
           birthPlace,
         } = dataUser.data;
         let genderFormat = genderConstant.find((el) => el.value === gender);
-
+        let birthDateFormat = new Date(birthDate).toISOString().substr(0, 10);
+        let familyRelationshipsFormat = familyRelationships.map((el) => ({
+          ...el,
+          birthDate: new Date(el?.birthDate).toISOString().substr(0, 10),
+        }));
         setDataInital({
           id,
           firstName,
-          birthDate,
+          birthDate: birthDateFormat,
           birthPlace,
           gender: genderFormat,
           department,
@@ -134,7 +138,7 @@ export default observer(function FamilyRelationshipIndex() {
           nationality,
           ethnics,
           religion,
-          familyRelationships,
+          familyRelationships: familyRelationshipsFormat,
           lastName,
           displayName,
         });
@@ -156,11 +160,10 @@ export default observer(function FamilyRelationshipIndex() {
     totalElements: count,
     totalPages: totalPages,
     setRowsPerPage: setRowsPerPage,
-    title: "Department  Table",
+    title: "Staff  Table",
     pageSizeOption: pageSizeOption,
     page: queries.pageIndex,
     actions: actionsTableStaff,
-
     handleChangePage: handleChangePage,
     defaultValueRowsPerPage: queries.pageSize,
   };
@@ -173,15 +176,22 @@ export default observer(function FamilyRelationshipIndex() {
           let { displayName, gender } = values;
           displayName = `${values.firstName} ${values.lastName}`;
           if (openModal) {
-            await handleAdd({
+            await handleAdd(
+              {
+                ...values,
+                displayName,
+                gender: gender?.value,
+              },
+              setOpenModal,
+              setQueries
+            );
+            console.log("vvv", {
               ...values,
               displayName,
               gender: gender?.value,
             });
-            setOpenModal(false);
           }
           if (openModalUpdate) {
-            console.log("update");
             await handleUpdate(
               {
                 ...values,
@@ -190,6 +200,10 @@ export default observer(function FamilyRelationshipIndex() {
               },
               setQueries
             );
+            setDataInital({
+              ...typeStaff,
+              familyRelationships: [{ ...typeStaffFamilyRel }],
+            });
             setOpenModalUpdate(false);
           }
         }}
@@ -258,9 +272,7 @@ export default observer(function FamilyRelationshipIndex() {
                   onBlur={props.handleBlur}
                   name="birthDate"
                   placeholder="Enter birthDate"
-                  value={new Date(props.values["birthDate"])
-                    .toISOString()
-                    .substr(0, 10)}
+                  value={props?.values["birthDate"]}
                 />
               </div>
               <div className="group-field">
@@ -409,9 +421,7 @@ export default observer(function FamilyRelationshipIndex() {
                                     <GlobitsDateTimePicker
                                       onChange={props.handleChange}
                                       name={`familyRelationships[${index}].birthDate`}
-                                      value={new Date(staffFamily.birthDate)
-                                        .toISOString()
-                                        .substr(0, 10)}
+                                      value={staffFamily.birthDate}
                                     />
 
                                     <GlobitsAutocomplete

@@ -5,7 +5,7 @@ import React from "react";
 
 const GlobitsAutocomplete = ({
   name,
-  options,
+  options = [],
   displayData,
   variant,
   size,
@@ -17,12 +17,14 @@ const GlobitsAutocomplete = ({
   const [field, meta] = useField(name);
 
   const handleChange = (_, value) => {
+    console.log("vau", value);
     if (isObject != null && !isObject) {
       setFieldValue(name, value.value ? value.value : null);
     } else {
       setFieldValue(name, value ? value : null);
     }
   };
+  console.log("op", options);
 
   const configAutocomplete = {
     ...field,
