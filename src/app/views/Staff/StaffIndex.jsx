@@ -118,10 +118,10 @@ export default observer(function FamilyRelationshipIndex() {
           birthPlace,
         } = dataUser.data;
         let genderFormat = genderConstant.find((el) => el.value === gender);
-        let birthDateFormat = new Date(birthDate).toISOString().substr(0, 10);
+        let birthDateFormat = new Date(birthDate).toISOString().slice(0, 10);
         let familyRelationshipsFormat = familyRelationships.map((el) => ({
           ...el,
-          birthDate: new Date(el?.birthDate).toISOString().substr(0, 10),
+          birthDate: new Date(el?.birthDate).toISOString().slice(0, 10),
         }));
         setDataInital({
           id,
@@ -176,6 +176,7 @@ export default observer(function FamilyRelationshipIndex() {
           let { displayName, gender } = values;
           displayName = `${values.firstName} ${values.lastName}`;
           if (openModal) {
+            console.log("va", values);
             await handleAdd(
               {
                 ...values,
@@ -183,13 +184,8 @@ export default observer(function FamilyRelationshipIndex() {
                 gender: gender?.value,
               },
               setOpenModal,
-              setQueries
+              queries
             );
-            console.log("vvv", {
-              ...values,
-              displayName,
-              gender: gender?.value,
-            });
           }
           if (openModalUpdate) {
             await handleUpdate(
@@ -198,13 +194,13 @@ export default observer(function FamilyRelationshipIndex() {
                 displayName,
                 gender: gender?.value,
               },
-              setQueries
+              setOpenModalUpdate,
+              queries
             );
             setDataInital({
               ...typeStaff,
               familyRelationships: [{ ...typeStaffFamilyRel }],
             });
-            setOpenModalUpdate(false);
           }
         }}
       >
@@ -263,6 +259,10 @@ export default observer(function FamilyRelationshipIndex() {
                   options={genderConstant}
                   displayData={"name"}
                   field="gender"
+                  onChange={(_, value) => {
+                    props.setFieldValue("gender", value);
+                  }}
+                  value={props.values["gender"]}
                 />
               </div>
               <div className="group-field">
@@ -282,6 +282,10 @@ export default observer(function FamilyRelationshipIndex() {
                   options={countryList}
                   displayData={"name"}
                   field="nationality"
+                  onChange={(_, value) => {
+                    props.setFieldValue("nationality", value);
+                  }}
+                  value={props.values["nationality"]}
                 />
               </div>
               <div className="group-field">
@@ -291,6 +295,10 @@ export default observer(function FamilyRelationshipIndex() {
                   options={ethnicsList}
                   displayData={"name"}
                   field="ethnics"
+                  onChange={(_, value) => {
+                    props.setFieldValue("ethnics", value);
+                  }}
+                  value={props.values["ethnics"]}
                 />
               </div>
               <div className="group-field">
@@ -300,6 +308,10 @@ export default observer(function FamilyRelationshipIndex() {
                   options={religionList}
                   displayData={"name"}
                   field="religion"
+                  onChange={(_, value) => {
+                    props.setFieldValue("religion", value);
+                  }}
+                  value={props.values["religion"]}
                 />
               </div>
               <div className="group-field">
@@ -310,6 +322,10 @@ export default observer(function FamilyRelationshipIndex() {
                   options={departmentList}
                   displayData={"name"}
                   field="department"
+                  onChange={(_, value) => {
+                    props.setFieldValue("department", value);
+                  }}
+                  value={props.values["department"]}
                 />
               </div>
               <div className="group-field">
@@ -428,6 +444,13 @@ export default observer(function FamilyRelationshipIndex() {
                                       name={`familyRelationships[${index}].familyRelationship`}
                                       options={familyRelationList}
                                       displayData={"name"}
+                                      onChange={(_, value) => {
+                                        props.setFieldValue(
+                                          `familyRelationships[${index}].familyRelationship`,
+                                          value
+                                        );
+                                      }}
+                                      value={staffFamily.familyRelationship}
                                     />
 
                                     <GlobitTextFieldCustom
@@ -470,7 +493,14 @@ export default observer(function FamilyRelationshipIndex() {
 
             <DialogActions style={{ paddingBottom: "24px" }}>
               <Button
-                onClick={() => setOpenModal(false)}
+                onClick={() => {
+                  setOpenModal(false);
+                  setOpenModalUpdate(false);
+                  setDataInital({
+                    ...typeStaff,
+                    familyRelationships: [{ ...typeStaffFamilyRel }],
+                  });
+                }}
                 variant="contained"
                 color="secondary"
               >

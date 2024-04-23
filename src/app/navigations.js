@@ -49,8 +49,14 @@ export const navigations = [
         isVisible: true,
       },
       {
-        name: "Dự Án",
+        name: "Dự án",
         path: ConstantList.ROOT_PATH + "category/project",
+        icon: "remove",
+        isVisible: true,
+      },
+      {
+        name: "Thời gian biểu",
+        path: ConstantList.ROOT_PATH + "category/timeSheet",
         icon: "remove",
         isVisible: true,
       },

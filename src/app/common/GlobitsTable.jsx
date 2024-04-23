@@ -32,17 +32,18 @@ export default function GlobitsTable({ props }) {
     actions,
     defaultValueRowsPerPage,
   } = props;
+  console.log("data", data);
 
   return (
     <div className={classes.globitsTableWraper}>
       <MaterialTable
         data={data}
         columns={columns}
-        parentChildData={(row, rows) => {
-          var list = rows.find((a) => a.id === row?.parentId);
-          console.log("list", list);
-          return list;
-        }}
+        // parentChildData={(row, rows) => {
+        //   let list = rows.find((a) => a.id === row.parentId);
+        //   console.log("list", list);
+        //   return list;
+        // }}
         editable={{ ...editable }}
         actions={actions}
         options={{

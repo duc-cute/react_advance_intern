@@ -1,7 +1,7 @@
 import React from "react";
 import { TextField } from "@material-ui/core";
 import { useField } from "formik";
-
+import DateFnsUtils from "@date-io/date-fns";
 const GlobitsDateTimePicker = ({
   name,
   size,
@@ -10,14 +10,13 @@ const GlobitsDateTimePicker = ({
   ...otherProps
 }) => {
   const [field, meta] = useField(name);
-
   const configDateTimePicker = {
     ...field,
     ...otherProps,
     type: "date",
     variant: variant ? variant : "outlined",
     size: size ? size : "small",
-    format: format ? format : "dd/MM/yyyy",
+    format: format ? format : "MM/dd/yyyy",
     fullWidth: true,
     InputLabelProps: {
       shrink: true,

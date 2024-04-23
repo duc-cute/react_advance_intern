@@ -29,7 +29,7 @@ export default function GlobitsDialogCustom({
     <div className={classes.root}>
       <Dialog
         open={open}
-        onClose={() => setOpen(false)}
+        // onClose={() => setOpen(false)}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle className={classes.title} id="form-dialog-title">

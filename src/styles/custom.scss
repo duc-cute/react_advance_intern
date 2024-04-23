@@ -13,6 +13,9 @@
 .makeStyles-root-384 {
   width: inherit !important;
 }
+.MuiDialog-paperWidthSm {
+  max-width: inherit !important;
+}
 .grid-staffFamily {
   .MuiOutlinedInput-root {
     border-radius: 0 !important;
@@ -39,4 +42,53 @@
       }
     }
   }
+}
+
+.timesheet-wrapper {
+  margin: 32px 24px;
+  .timesheet-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    .timesheet-form {
+      display: flex;
+      gap: 24px;
+    }
+  }
+  .MuiIconButton-colorInherit:first-child {
+    color: #01c0c8;
+  }
+  .MuiIconButton-colorInherit:last-child {
+    color: #fb9678;
+  }
+  .timesheet-content {
+    display: flex;
+    gap: 12px;
+    .timesheet-search {
+      flex: 1;
+
+      .timesheet-search-title {
+        text-align: center;
+        color: #fff !important;
+        padding: 12px 0;
+        background-color: #01c0c8;
+        font-size: 20px;
+      }
+      .timesheet-search-all {
+        color: #fb9678;
+        margin: 24px;
+        display: flex;
+        justify-content: center;
+        font-size: 18px;
+        cursor: pointer;
+      }
+    }
+    .timesheet-list {
+      flex: 3;
+    }
+  }
+}
+.MuiTableCell-root:first-child {
+  text-align: center;
 }

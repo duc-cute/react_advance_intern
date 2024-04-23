@@ -148,3 +148,9 @@ export const generateRange = (start, end) => {
 
   return Array.from({ length }, (_, index) => start + index);
 };
+
+export const mergedArray = (array) => {
+  return array.reduce((accumulator, currentValue) => {
+    return accumulator.concat(currentValue);
+  }, []);
+};

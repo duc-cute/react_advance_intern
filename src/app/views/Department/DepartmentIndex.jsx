@@ -51,13 +51,9 @@ export default observer(function FamilyRelationshipIndex() {
     onSubmit: (values) => {
       let { parent, ...dataOthers } = values;
 
-      if (parent === "") handleAdd(dataOthers, setOpenModal, setQueries);
+      if (parent === "") handleAdd(dataOthers, setOpenModal, queries);
       else
-        handleAdd(
-          { ...dataOthers, parent: dataSelect },
-          setOpenModal,
-          setQueries
-        );
+        handleAdd({ ...dataOthers, parent: dataSelect }, setOpenModal, queries);
     },
     validationSchema: DepartmentSchema,
   });
@@ -254,7 +250,12 @@ export default observer(function FamilyRelationshipIndex() {
           </div>
         </div>
         <DialogActions>
-          <Button onClick={() => setOpenModal(false)} color="primary">
+          <Button
+            onClick={() => {
+              setOpenModal(false);
+            }}
+            color="primary"
+          >
             Cancel
           </Button>
           <Button type="submit" color="primary">

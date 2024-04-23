@@ -2,58 +2,55 @@ import { action, makeAutoObservable, observable, runInAction } from "mobx";
 
 import { toast } from "react-toastify";
 import {
-  createStaff,
-  deleteStaff,
-  editStaff,
-  getAllStaff,
-  pagingStaffs,
-} from "./StaffService";
-import { genderConstant } from "../constant";
+  createTimeSheet,
+  deleteTimeSheet,
+  editTimeSheet,
+  getTimeSheet,
+  getTimeSheetByWorkingDate,
+  getTimeSheetDetail,
+  pagingTimeSheet,
+} from "./TimeSheetService";
 import moment from "moment";
+import { priorityConstant } from "../constant";
 
-export default class StaffStore {
-  staffList = [];
-  staffListFormat = [];
+export default class TimeSheetStore {
+  timeSheetList = [];
+  timeSheetFormatList = [];
   totalPages = 0;
   count = 0;
 
   constructor(value) {
     makeAutoObservable(this, {
-      staffList: observable,
-      staffListFormat: observable,
       loadStaff: action,
       handleAdd: action,
       handleDelete: action,
       handleUpdate: action,
-      loadAllStaff: action,
     });
   }
 
-  loadStaff = async (queries) => {
-    const data = await pagingStaffs(queries);
+  loadTimeSheet = async (queries) => {
+    const data = await pagingTimeSheet(queries);
     runInAction(() => {
-      this.staffList = data.data?.content;
-      this.staffListFormat = data.data?.content.map((staff) => ({
-        ...staff,
-        department: staff.department.name,
-        nationality: staff.nationality.name,
-        birthDate: moment(staff.birthDate).format("YYYY-MM-DD"),
-        gender: genderConstant.find((el) => el.value === staff.gender)?.name,
-      }));
+      this.timeSheetList = data.data?.content;
+      this.timeSheetFormatList = data.data?.content.map((timesheet) => {
+        return timesheet.details.map((detail) => ({
+          ...timesheet,
+          priority: priorityConstant.find(
+            (el) => el.value === timesheet.priority
+          )?.title,
+          workingItemTitle: detail.workingItemTitle,
+          employee: detail.employee?.displayName,
+        }));
+      });
+
       this.totalPages = data.data?.totalPages;
       this.count = data.data?.totalElements;
     });
   };
-  loadAllStaff = async () => {
-    const data = await getAllStaff();
-    runInAction(() => {
-      this.staffList = data?.data;
-    });
-  };
 
   handleAdd = async (values, setOpenModal, queries) => {
-    const res = await createStaff(values);
-    this.loadStaff(queries);
+    const res = await createTimeSheet(values);
+    this.loadTimeSheet(queries);
     if (res.status === 200) {
       toast.success(`Tạo thành công `);
       setOpenModal(false);
@@ -61,8 +58,8 @@ export default class StaffStore {
   };
   handleUpdate = async (newData, setOpenModal, queries) => {
     try {
-      const res = await editStaff(newData);
-      this.loadStaff(queries);
+      const res = await editTimeSheet(newData);
+      this.loadTimeSheet(queries);
       if (res.data) {
         toast.success("Cập nhật thành công!");
         setOpenModal(false);
@@ -73,11 +70,11 @@ export default class StaffStore {
   };
   handleDelete = async (id, setQueries, queries) => {
     try {
-      const res = await deleteStaff(id);
+      const res = await deleteTimeSheet(id);
       if (res.data) toast.success("Xóa thành công!");
-      if (this.staffList.length === 1)
+      if (this?.timeSheetList?.length === 1)
         setQueries((prev) => ({ ...prev, pageIndex: queries.pageIndex - 1 }));
-      else this.loadStaff(queries);
+      else this.loadTimeSheet(queries);
     } catch (error) {
       toast.error(error.message);
     }

@@ -6,7 +6,12 @@ import Button from "@material-ui/core/Button";
 import GlobitsSearchInputCustom from "app/common/GlobitsSearchInputCustom";
 import { Formik, useFormik } from "formik";
 import GlobitsDialogCustom from "app/common/form/GlobitsDialogCustom";
-import { columnsProject, pageSizeOption, typeProject } from "../constant";
+import {
+  ProjectSchema,
+  columnsProject,
+  pageSizeOption,
+  typeProject,
+} from "../constant";
 import DialogActions from "@material-ui/core/DialogActions";
 import { observer } from "mobx-react";
 import { useStore } from "../../stores";
@@ -30,7 +35,7 @@ export default observer(function FamilyRelationshipIndex() {
     handleDelete,
     handleUpdate,
   } = projectStore;
-  const { loadStaff, staffList } = staffStore;
+  const { loadAllStaff, staffList } = staffStore;
 
   const [queries, setQueries] = useState({
     pageIndex: 1,
@@ -54,11 +59,7 @@ export default observer(function FamilyRelationshipIndex() {
   }, [queries]);
 
   useEffect(() => {
-    const queriesInfo = {
-      pageIndex: 1,
-      pageSize: 10,
-    };
-    loadStaff(queriesInfo);
+    loadAllStaff();
   }, []);
 
   const handleSearch = (value) => {
@@ -111,17 +112,16 @@ export default observer(function FamilyRelationshipIndex() {
         initialValues={dataInital}
         onSubmit={async (values, actions) => {
           if (openModal) {
-            await handleAdd(values, setOpenModal, setQueries);
-          }
-          if (openModalUpdate) {
-            await handleUpdate(values, setQueries);
+            console.log("v", values);
+            await handleAdd(values, setOpenModal, queries);
+          } else if (openModalUpdate) {
+            await handleUpdate(values, setOpenModalUpdate, queries);
             setDataInital({
               ...typeProject,
             });
-            setOpenModalUpdate(false);
-            console.log("v", values);
           }
         }}
+        validationSchema={ProjectSchema}
       >
         {(props) => (
           <form
@@ -178,8 +178,6 @@ export default observer(function FamilyRelationshipIndex() {
                   options={staffList}
                   displayData={"displayName"}
                   defaultValue={props.values["projectStaff"]}
-
-                  // handleChange={(value) => console.log("va", value)}
                 />
               </div>
             </div>
@@ -189,6 +187,7 @@ export default observer(function FamilyRelationshipIndex() {
                 onClick={() => {
                   setOpenModal(false);
                   setOpenModalUpdate(false);
+                  setDataInital({ ...typeProject });
                 }}
                 variant="contained"
                 color="secondary"
@@ -220,10 +219,7 @@ export default observer(function FamilyRelationshipIndex() {
               />
             </form>
             <Button
-              onClick={() => {
-                setOpenModal(true);
-                setDataInital({ ...typeProject });
-              }}
+              onClick={() => setOpenModal(true)}
               variant="contained"
               color="primary"
               startIcon={<AddIcon />}

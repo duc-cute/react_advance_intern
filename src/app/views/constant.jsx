@@ -1,5 +1,8 @@
 import { generateRange } from "utils";
 import * as Yup from "yup";
+import Chip from "@material-ui/core/Chip";
+import moment from "moment";
+
 export const CountrySchema = Yup.object().shape({
   name: Yup.string()
     .min(2, "Too Short!")
@@ -53,6 +56,24 @@ export const StaffSchema = Yup.object().shape({
   // religion: Yup.string().required("Required"),
   // department: Yup.string().required("Required"),
 });
+
+export const TimeSheetSchema = Yup.object().shape({
+  project: Yup.string().required("Required"),
+  timeSheetStaff: Yup.string().required("Required"),
+  workingDate: Yup.string().required("Required"),
+  startTime: Yup.string().required("Required"),
+  endTime: Yup.string().required("Required"),
+  priority: Yup.string().required("Required"),
+  description: Yup.string().required("Required"),
+});
+
+export const ProjectSchema = Yup.object().shape({
+  name: Yup.string().required("Required"),
+  code: Yup.string().required("Required"),
+  description: Yup.string().required("Required"),
+  projectStaff: Yup.array().min(1, "required"),
+});
+
 export const columnsCountry = [
   { field: "name", title: "Name" },
   { field: "code", title: "Code" },
@@ -105,6 +126,21 @@ export const typeStaffFamilyRel = {
   familyRelationship: "",
   address: "",
   description: "",
+};
+
+export const typeTimeSheet = {
+  project: "",
+  timeSheetStaff: [],
+  workingDate: "",
+  startTime: "09:00",
+  endTime: "18:00",
+  priority: "",
+  description: "",
+};
+
+export const typeTimeSheetDetail = {
+  workingItemTitle: "",
+  employee: "",
 };
 
 export const columnsDepart = [
@@ -187,6 +223,68 @@ export const columnStaffFamilyRelShip = [
     title: "Địa chỉ",
   },
 ];
+export const columnsTimeSheetDetails = [
+  { field: "workingItemTitle", title: "Tiêu đề đầu việc" },
+  {
+    field: "employee",
+    title: "Nhân viên thực hiện",
+  },
+];
+
+export const columnsTimeSheet = [
+  {
+    field: "project",
+    title: "Công việc",
+    render: (rowData) => (
+      <span style={{ fontWeight: 600 }}>{rowData?.workingItemTitle}</span>
+    ),
+  },
+  {
+    // field: "code",
+    title: "Thời gian",
+    render: (rowData) => (
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <span>
+          Thời gian bắt đầu{" "}
+          <strong style={{ color: "#01c0c8" }}>
+            {moment.utc(rowData.startTime).format("HH:mm DD/MM/YYYY")}
+          </strong>
+        </span>
+        <span>
+          Thời gian kết thúc{" "}
+          <strong style={{ color: "#01c0c8" }}>
+            {moment.utc(rowData.endTime).format("HH:mm DD/MM/YYYY")}
+          </strong>
+        </span>
+        <span>
+          Tổng thời gian{" "}
+          <strong style={{ color: "#01c0c8" }}>
+            {moment.utc(rowData.endTime - rowData.startTime).format("HH")} tiếng
+          </strong>
+        </span>
+      </div>
+    ),
+  },
+  {
+    field: "priority",
+    title: "Mức độ ưu tiên",
+    render: (rowData) => {
+      return (
+        <Chip
+          label={rowData?.priority}
+          color={rowData?.priority === "Cấp bách" ? "secondary" : ""}
+        />
+      );
+    },
+  },
+  {
+    field: "employee",
+    title: "Người thực giện",
+    render: (rowData) => <span>{rowData?.employee}</span>,
+  },
+
+  // { field: "code", title: "Người thực hiện" },
+];
 
 export const actionsTableDepart = [
   {
@@ -209,3 +307,26 @@ export const genderConstant = [
     name: "Không rõ",
   },
 ];
+export const priorityConstant = [
+  {
+    value: 1,
+    title: "Thấp",
+  },
+  {
+    value: 2,
+    title: "Trung bình",
+  },
+  {
+    value: 3,
+    title: "Cao",
+  },
+  {
+    value: 4,
+    title: "Cấp bách",
+  },
+];
+
+export const initQueries = {
+  pageIndex: 1,
+  pageSize: 10,
+};
