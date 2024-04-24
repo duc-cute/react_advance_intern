@@ -40,6 +40,7 @@ export default class TimeSheetStore {
           )?.title,
           workingItemTitle: detail.workingItemTitle,
           employee: detail.employee?.displayName,
+          idDetail: detail?.id,
         }));
       });
 

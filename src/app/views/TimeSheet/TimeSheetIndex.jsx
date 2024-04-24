@@ -110,7 +110,45 @@ export default observer(function FamilyRelationshipIndex() {
       icon: "delete",
       tooltip: "Delete User",
       onClick: async (event, rowData) => {
-        await handleDelete(rowData.id, setQueries, queries);
+        const dataTimeSheet = await getTimeSheet(rowData?.id);
+        if (dataTimeSheet.data.details.length === 1) {
+          await handleDelete(rowData.id, setQueries, queries);
+        } else {
+          let {
+            id,
+            startTime,
+            endTime,
+            workingDate,
+            project,
+            priority,
+            details,
+            timeSheetStaff,
+            description,
+          } = dataTimeSheet.data;
+          priority = priorityConstant.find((el) => el.value === priority).value;
+          details = details
+            .filter((detail) => detail.id !== rowData?.idDetail)
+            .map((detail) => ({
+              employee: detail.employee,
+              workingItemTitle: detail.workingItemTitle,
+            }));
+
+          await handleUpdate(
+            {
+              id,
+              startTime,
+              endTime,
+              workingDate,
+              project,
+              priority,
+              details,
+              timeSheetStaff,
+              description,
+            },
+            setOpenModalUpdate,
+            queries
+          );
+        }
       },
     },
   ];
