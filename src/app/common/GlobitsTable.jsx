@@ -31,19 +31,19 @@ export default function GlobitsTable({ props }) {
     components,
     actions,
     defaultValueRowsPerPage,
+    parentChildData = false,
   } = props;
-  console.log("data", data);
+  const handleParentChildData = (row, rows) => {
+    let list = rows.find((a) => a.id === row.parentId);
+    return list;
+  };
 
   return (
     <div className={classes.globitsTableWraper}>
       <MaterialTable
         data={data}
         columns={columns}
-        // parentChildData={(row, rows) => {
-        //   let list = rows.find((a) => a.id === row.parentId);
-        //   console.log("list", list);
-        //   return list;
-        // }}
+        parentChildData={parentChildData && handleParentChildData}
         editable={{ ...editable }}
         actions={actions}
         options={{

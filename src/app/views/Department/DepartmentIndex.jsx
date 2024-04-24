@@ -121,6 +121,7 @@ export default observer(function FamilyRelationshipIndex() {
     handleChangePage: handleChangePage,
     defaultValueRowsPerPage: queries.pageSize,
     selection: true,
+    parentChildData: true,
   };
 
   const propsTableDialog = {
